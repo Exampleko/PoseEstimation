@@ -1,0 +1,36 @@
+# VIDEO FEED
+cap = cv2.VideoCapture(0)  # real-time video capture (0: web cam)
+# Setup mediapipe instance
+with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
+    while cap.isOpened():
+        ret, frame = cap.read()   # ret: 사용 안하는 값 frame: 웹캠에서 얻는 이미지
+
+        # Recolor image to RGB
+        image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # opencv에서는 rgb가 아닌 gbr로 처리함
+        image.flags.writeable = False
+
+        # Make detection
+        # reuslts.landmarks = 각 관절 포인트의 위치 벡터 저장
+        results = pose.process(image)
+
+        # Recolor back to BGR
+        image.flags.writeable = True
+        image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+
+        # Render detections
+        # drawing_landmarks: mp.solutions.drawing_utils.daw_landmarks를 image에 그려줌
+        # POSE_CONNECTIONS: landmarks(관절 point)간의 연결 관계를 알려줌
+        mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS, 
+                                  mp_drawing.DrawingSpec(color=(245,117,66), thickness=2, circle_radius=2),  # dots drawing specification 
+                                  mp_drawing.DrawingSpec(color=(245,66,230), thickness=2, circle_radius=2)   # connections drawing specification 
+                                 )
+        
+
+        image = cv2.flip(image,1)
+        cv2.imshow("Mediapipe Feed", image)  # 팝업 스크린에 웹캠을 띄워줌
+    
+        if cv2.waitKey(10) & 0xFF == ord('q'):
+            break
+    
+    cap.release()
+    cv2.destroyAllWindows()
