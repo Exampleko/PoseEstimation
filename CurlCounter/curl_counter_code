@@ -17,6 +17,15 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
         image.flags.writeable = True
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
+
+        # Extract landmarks
+        try:
+            landmarks = results.pose_landmarks.landmark    # 랜드마크 추출 (0~32번)
+            print(landmarks)
+        except:
+            pass
+
+
         # Render detections
         # drawing_landmarks: mp.solutions.drawing_utils.daw_landmarks를 image에 그려줌
         # POSE_CONNECTIONS: landmarks(관절 point)간의 연결 관계를 알려줌
@@ -26,7 +35,7 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
                                  )
         
 
-        image = cv2.flip(image,1)
+        # image = cv2.flip(image,1)
         cv2.imshow("Mediapipe Feed", image)  # 팝업 스크린에 웹캠을 띄워줌
     
         if cv2.waitKey(10) & 0xFF == ord('q'):
