@@ -15,6 +15,14 @@ while cap.isOpened():
     image.flags.writeable = True
     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
+    # Extrack landmarks
+    try:
+        landmarks = results.pose_landmarks.landmark    # 랜드마크 추출 (0~32번)
+        print(landmarks)
+    except:
+        pass
+
+
     # Render detections
     # drawing_landmarks: mp.solutions.drawing_utils.daw_landmarks를 image에 그려줌
     # POSE_CONNECTIONS: landmarks(관절 point)간의 연결 관계를 알려줌
